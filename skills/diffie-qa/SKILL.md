@@ -657,12 +657,16 @@ EOF
 
 #### Step 7: Clean Up
 
+Do not delete the PR test after posting — the recording link in the PR comment depends on the test/run still existing. Leave it in place.
+
+<!--
 After posting the result, delete the PR test to avoid cluttering the user's test list:
 
 ```bash
 curl -s -X DELETE "$API_URL/ci/tests/$TEST_ID" \
   -H "Authorization: Bearer $TOKEN"
 ```
+-->
 
 Do NOT update `.diffie-qa.md` for PR tests — they are ephemeral.
 
@@ -671,7 +675,7 @@ Do NOT update `.diffie-qa.md` for PR tests — they are ephemeral.
 - **Never ask for user input** — you are running in CI, there is no one to respond
 - **Never skip posting a comment** — always post a result, even if it's "no test applicable"
 - **Update existing comments** — don't spam the PR with multiple Diffie comments
-- **Delete PR tests after posting** — PR tests are one-off, not persistent
+- **Do not delete PR tests after posting** — the recording link in the comment depends on the test/run existing
 - **One test per PR** — focus on the single most important user-facing flow changed
 - **Use the preview URL** — never test against production
 
