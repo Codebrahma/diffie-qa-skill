@@ -48,12 +48,6 @@ Tell the user: "I need to log you into Diffie. A browser window will open — pl
 bun run ${CLAUDE_SKILL_DIR}/scripts/login.ts
 ```
 
-For local development or custom environments, execute:
-
-```bash
-bun run ${CLAUDE_SKILL_DIR}/scripts/login.ts --api-url http://localhost:3005 --auth-url https://auth.alpha.diffie.ai
-```
-
 After the script completes, read `~/.diffie/credentials.json` to verify the token was saved.
 
 **Do NOT proceed with any API calls until you have a valid token.**
