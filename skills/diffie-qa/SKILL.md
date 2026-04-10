@@ -564,7 +564,28 @@ EOF
 )"
 ```
 
-Create the test:
+Before creating the test, post an in-progress comment so the PR author knows Diffie has started. Check for an existing Diffie QA comment first, so reruns update it instead of spamming:
+
+```bash
+EXISTING_COMMENT=$(gh api repos/$REPO/issues/$PR_NUMBER/comments --jq '.[] | select(.body | startswith("## Diffie QA")) | .id' | head -1)
+
+BODY="$(cat <<'EOF'
+## Diffie QA
+
+⏳ Diffie is testing this PR...
+
+> [Diffie](https://diffie.ai) — AI-powered E2E testing
+EOF
+)"
+
+if [ -n "$EXISTING_COMMENT" ]; then
+  gh api repos/$REPO/issues/comments/$EXISTING_COMMENT -X PATCH -f body="$BODY"
+else
+  gh pr comment $PR_NUMBER --body "$BODY"
+fi
+```
+
+Then create the test:
 
 ```bash
 curl -s -X POST "$API_URL/ci/tests" \
@@ -612,7 +633,7 @@ BODY="$(cat <<'EOF'
 
 **Test:** <test name>
 **Status:** ✅ Passed (<duration>s)
-**Recording:** [Watch test run](<recording URL or app URL for the run>)
+**Recording:** [Watch test run](https://app.diffie.ai/runs/$RUN_ID)
 
 > Tested against `<preview URL>` — [Diffie](https://diffie.ai)
 EOF
@@ -634,7 +655,7 @@ BODY="$(cat <<'EOF'
 **Test:** <test name>
 **Status:** ❌ Failed (<duration>s)
 **Error:** <error message from run>
-**Recording:** [Watch test run](<recording URL or app URL for the run>)
+**Recording:** [Watch test run](https://app.diffie.ai/runs/$RUN_ID)
 
 > Tested against `<preview URL>` — [Diffie](https://diffie.ai)
 EOF
