@@ -66,11 +66,9 @@ jobs:
 
       - name: Run Diffie QA
         uses: anthropics/claude-code-action@v1
-        env:
-          GH_TOKEN: ${{ steps.diffie-bot.outputs.token }}
-          GITHUB_TOKEN: ${{ steps.diffie-bot.outputs.token }}
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ steps.diffie-bot.outputs.token }}
           prompt: |
             You are in PR testing mode (CI=true). Use the diffie-qa skill.
 
