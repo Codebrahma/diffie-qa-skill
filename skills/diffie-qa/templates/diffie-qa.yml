@@ -14,6 +14,13 @@ jobs:
       pull-requests: write
       issues: write
     steps:
+      - name: Generate Diffie bot token
+        id: diffie-bot
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.DIFFIE_APP_ID }}
+          private-key: ${{ secrets.DIFFIE_APP_PRIVATE_KEY }}
+
       - name: Get PR branch
         id: pr
         run: |
@@ -21,7 +28,7 @@ jobs:
           echo "ref=$(echo $PR_DATA | jq -r .head.ref)" >> $GITHUB_OUTPUT
           echo "number=${{ github.event.issue.number }}" >> $GITHUB_OUTPUT
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.diffie-bot.outputs.token }}
 
       - uses: actions/checkout@v4
         with:
@@ -59,6 +66,9 @@ jobs:
 
       - name: Run Diffie QA
         uses: anthropics/claude-code-action@v1
+        env:
+          GH_TOKEN: ${{ steps.diffie-bot.outputs.token }}
+          GITHUB_TOKEN: ${{ steps.diffie-bot.outputs.token }}
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           prompt: |
